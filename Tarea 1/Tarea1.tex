@@ -1,0 +1,190 @@
+\documentclass[12pt,spanish,letter]{article}
+
+\usepackage[latin1]{inputenc}% Tildes
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath, amsthm, amsfonts}
+\usepackage[small,bf]{caption}
+\setlength{\captionmargin}{20pt}
+\usepackage{indentfirst}
+\usepackage{multicol}
+\usepackage{enumerate}
+\usepackage{booktabs}
+\usepackage{array}
+\newcolumntype{?}{!{\vrule width 2pt}}
+
+
+\usepackage{authblk}
+\renewcommand\Authand{  }
+\renewcommand\Authands{,  }
+
+\usepackage{hyperref}
+\usepackage[none]{hyphenat}
+\tolerance=6000
+
+\usepackage{geometry}
+\geometry{right=1in, left=1in}
+\geometry{top=1in, bottom=1in}
+\geometry{includefoot}
+\textheight = 8.5in
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\tikzstyle{line} = [draw, ->, line width=1pt]
+\tikzstyle{arrow} = [draw, ->,  line width=1pt, thick, dash dot]
+
+\usepackage{verbatim}
+\usepackage{enumitem}
+
+
+\usepackage{listings}
+\lstdefinestyle{customC}{
+  %language=C,
+  showstringspaces=false,
+  basicstyle=\small\ttfamily,
+  keywordstyle=\bfseries\color{blue},
+  commentstyle=\itshape\color{white!40!black},
+  tabsize = 4,
+  stringstyle=\color{red},
+}
+
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{lastpage}
+
+\fancypagestyle{plain}
+{
+  \setlength{\topmargin}{-0.5in}
+  \setlength{\headheight}{1.05in}
+  \setlength{\headsep}{-0.0in}
+  \setlength{\headwidth}{\textwidth}
+  \setlength{\footskip}{2.0in}
+  \fancyhead[l]{
+    {\bf T\'opicos Avanzados en Inteligencia Artificial}\\
+    {\bf Tarea Pr\'actica 1}
+  }
+  \fancyhead[r]{
+    \includegraphics[scale=0.15]{src/usm_logo}
+  }
+}
+%====================================
+
+\pagestyle{myheadings}
+\markright{\bf{T\'opicos Avanzados en Inteligencia Artificial}}
+
+
+\title{\Large \bf
+Inteligencia Artificial\\ Tarea Pr\'actica 1}
+\author{Profesor: Nicol\'as Rojas Morales\\}
+\affil{\textit{Universidad T\'ecnica Federico Santa Mar\'ia, \\ Departamento de Inform\'atica. }}
+\date{\normalsize }
+
+
+\begin{document}
+
+\thispagestyle{fancy}
+\maketitle
+\thispagestyle{plain}
+\let\oldthefootnote\thefootnote
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\let\thefootnote\oldthefootnote
+\setlength{\headheight}{0.65in}
+\setlength{\textheight}{8.60in}
+\pagestyle{myheadings}
+
+\renewcommand{\tablename}{Tabla} 
+\renewcommand{\figurename}{{\bf \emph{Figura}}} 
+\maketitle
+
+\section{Ejecutando un Algoritmo}
+
+La primera tarea busca ejercitar la creaci\'on, dise\~no y ejecuci\'on de un escenario experimental en su m\'aquina.
+El objetivo de este escenario
+sera visualizar el desempe\~no de un algoritmo (Ant Knapsack)
+en un set de instancias, tanto en la calidad de las soluciones que puede obtener como en su tiempo de ejecuci\'on. \\
+
+Ant Knapsack (AK) es un algoritmo de hormigas dise\~nado para la resoluci\'on del Multidimensional Knapsack Problem.
+AK requiere los siguientes argumentos para su ejecuci\'on (puede observarlos en Initialize.cpp):
+\begin{verbatim}
+InstanciaFile = argv[1]; \\ Path a la instancia
+Seed = atoi(argv[2]); \\ Semilla 
+TotalAnts = atoi(argv[3]); \\ Cantidad de hormigas
+TotalEvaluations = atoi(argv[4]); \\ Cantidad de Evaluaciones (Recursos)
+alpha = atof(argv[5]); \\ Importancia de la Feromona
+beta = atof(argv[6]); \\ Importancia del Conocimiento Heuristico
+ph_max = atof(argv[7]); \\ Feromona maxima en la matriz
+ph_min = atof(argv[8]); \\ Feromona minima en la matriz
+rho = atof(argv[9]); \\ Tasa de Evaporacion de la Feromona
+\end{verbatim}
+
+Un ejemplo de ejecuci\'on de AK:
+
+\begin{verbatim}
+./AK ../instances/mknap1_7.txt 1 20 10000 9 1 50 0.01 0.99
+\end{verbatim}
+
+considerando el orden de los argumentos y par\'ametros se\~nalado, AK obtiene como resultado:
+
+\begin{verbatim}
+0.16327
+\end{verbatim}
+
+Esto significa que la calidad de la mejor soluci\'on encontrada por AK se encuentra a un 0.16\% de distancia al \'optimo global de la instancia MKNAP1\_7. El gap porcentual se calcula (observar en Main.cpp):
+
+\begin{verbatim}
+cout << 100*(Opt - BestFitnessFound)/Opt << endl;
+\end{verbatim}
+
+
+
+\subsection{Instancias}
+Para esta tarea, utilizaremos las siguientes instancias benchmark:
+
+\begin{verbatim}
+OR10x500-0.25_8.dat
+OR5x500-0.25_7.dat
+mknap1_5.txt
+mknap1_7.txt
+OR30x500-0.25_3.dat
+gk01.dat
+mknap1_6.txt	
+sento1.txt
+\end{verbatim}
+
+Mas detalles pueden ser obtenidos en \url{https://www.researchgate.net/publication/271198281_Benchmark_instances_for_the_Multidimensional_Knapsack_Problem}
+
+\section{Detalles Entrega}
+
+Se requiere crear un script que realice ejecuciones independientes de AK en todas las instancias. Considere:
+
+\begin{itemize}
+\item Se deben realizar 20 ejecuciones independientes (semillas distintas) por instancia.
+\item Los valores a los par\'ametros de AK ser\'an le\'idos de un archivo de texto llamado params.txt:
+\begin{verbatim}
+20 10000 9 1 50 0.01 0.99
+\end{verbatim}
+\item Mientras se ejecuta AK, el script debe crear un archivo de salida por instancia, donde se almacene la calidad de la mejor soluci\'on obtenida por AK (por semilla).
+\item Adem\'as, el script debe almacenar el tiempo de ejecuci\'on de AK (en segundos) en otro archivo de texto.
+\item Para agilizar la ejecuci\'on de los experimentos, el script puede controlar la cantidad de ejecuciones simult\'aneas de AK con un par\'ametro (cantidad de hebras disponibles para ejecutar).
+\item Una vez terminada la ejecuci\'on de AK, el script debe obtener m\'etricas de desempe\~no (mejor obtenido, $\mu$, $\sigma$, tiempo promedio de ejecuci\'on, minimo y m\'aximo tiempo de ejecuci\'on).
+\item El script debe generar un archivo que contenga una tabla con las m\'etricas de desempe\~no (por instancia) en formato \LaTeX.
+\end{itemize}
+
+Adem\'as, es requisito entregar un escrito en ingl\'es que contenga:
+\begin{itemize}
+\item Una secci\'on que presente caracter\'isticas sobre las instancias utilizadas.
+\item Explicaci\'on del escenario experimental y hardware utilizado. Detallar valores de par\'ametros utilizados, cantidad de recursos (n\'umero de evaluaciones).
+\item Resultados obtenidos por AK en cada instancia y an\'alisis respectivo.
+\item El escrito debe ser realizado en \LaTeX.
+\end{itemize}
+
+\textbf{Evaluaci\'on de su script}:
+\begin{itemize}
+\item Su script ser\'a revisado en una m\'aquina Linux/Unix.
+\item Considere que su script se ejecutar\'a en un directorio que adem\'as contendr\'a el archivo de par\'ametros, el directorio AntKnapsack y el directorio de instancias (disponibles en Aula).
+\item Se sugiere realizar make clean y make antes de ejecutar sus experimentos.
+\end{itemize}
+
+\textbf{Fecha de Entrega: 31 de Agosto - Informe en Clases - Script en Aula (Nombre\_Apellido.zip).}
+\end{document}          
